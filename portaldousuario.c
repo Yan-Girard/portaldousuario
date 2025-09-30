@@ -2,7 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-void iniciarSistema();
+#define euro 6.30
+#define dolar 5.34
+
+void menuCriacao();
+void menuInicial();
+void menuPrincipal();
 
 void menuCriacao(){
 	FILE *p_dadosdousuario;
@@ -27,7 +32,7 @@ void menuCriacao(){
 		fclose(p_dadosdousuario);
 		if(strlen(senha) > 5 && strcmp(senha, "123456") != 0){
 			printf("\nObrigado por criar sua conta! Voce sera redirecionado para o menu principal!\n\nRedirecionando...\n");
-			return;
+			menuPrincipal();
 		}else{
 			printf("\nA senha deve ter no minimo 6 digitos e ser dierente de 123456!\n");
 			remove("dadosdousuario.txt");
@@ -187,8 +192,6 @@ void menuPrincipal(){
 	    		opcao = 0;
 	    		
 				while(opcao != 4){	
-	    			#define euro 6.30
-					#define dolar 5.34
 					float sal_mes, sal_ano, diaria, receita_periodo, valor_conver, conver_dolar, conver_euro;
 					int dias_trabalhados;
 					
@@ -287,16 +290,12 @@ void menuPrincipal(){
 }
 
 int main() {
-	menuCriacao();
-	iniciarSistema();
-	
-	system("pause");
-	return 0;
-}
-void iniciarSistema(){
 	while(1){
 		menuCriacao();
 		menuInicial();
 		menuPrincipal();
 	}
+	
+	system("pause");
+	return 0;
 }
