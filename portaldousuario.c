@@ -4,50 +4,53 @@
 
 #define euro 6.30
 #define dolar 5.34
+#define menuprincipal 0
+#define menuinicial 1
+#define menucriacao 2
+#define sair 3
 
-void menuCriacao();
-void menuInicial();
-void menuPrincipal();
+int menuCriacao();
+int menuInicial();
+int menuPrincipal();
 
-void menuCriacao(){
+int menuCriacao(){
 	FILE *p_dadosdousuario;
-	char usuario[50], senha[50], usuario_salvo[50], senha_salva[50];
-	int opcao;
+	char usuario[50], senha[50];
 	
 	p_dadosdousuario = fopen("dadosdousuario.txt", "r");
 	
 	if(p_dadosdousuario == NULL){
-		printf("********************************************************\n");
-		printf("*                                                      *\n");
-		printf("*           BEM-VINDO AO PORTAL DO USUARIO             *\n");
-		printf("*                                                      *\n");
-		printf("********************************************************\n\n");
-		printf("Por favor, crie um usuario e uma senha, ambos sem espacos, antes de continuar.\n");
-		printf("\nUsuario: ");
-		scanf("%s", usuario);
-		printf("Senha: ");
-		scanf("%s", senha);
-		p_dadosdousuario = fopen("dadosdousuario.txt", "w");
-		fprintf(p_dadosdousuario, "%s %s", usuario, senha);
-		fclose(p_dadosdousuario);
-		if(strlen(senha) > 5 && strcmp(senha, "123456") != 0){
-			printf("\nObrigado por criar sua conta! Voce sera redirecionado para o menu principal!\n\nRedirecionando...\n");
-			menuPrincipal();
-		}else{
-			printf("\nA senha deve ter no minimo 6 digitos e ser dierente de 123456!\n");
-			remove("dadosdousuario.txt");
-		}
+		do{
+			printf("********************************************************\n");
+			printf("*                                                      *\n");
+			printf("*           BEM-VINDO AO PORTAL DO USUARIO             *\n");
+			printf("*                                                      *\n");
+			printf("********************************************************\n\n");
+			printf("Por favor, crie um usuario e uma senha, ambos sem espacos, antes de continuar.\n");
+			printf("\nUsuario: ");
+			scanf("%s", usuario);
+			printf("Senha: ");
+			scanf("%s", senha);
+			if(strlen(senha) > 5 && strcmp(senha, "123456") != 0){
+				p_dadosdousuario = fopen("dadosdousuario.txt", "w");
+				fprintf(p_dadosdousuario, "%s %s", usuario, senha);
+				fclose(p_dadosdousuario);
+				printf("\nObrigado por criar sua conta! Voce sera redirecionado para o menu principal!\n\nRedirecionando...\n\n");
+				return menuprincipal;
+			}else{
+				printf("\nA senha deve ter no minimo 6 digitos e ser dierente de 123456!\n\n");
+			}
+		}while(1);	
 	}else{
 		fclose(p_dadosdousuario);
-		return;
-	 }
+	}
 }
 
-void menuInicial(){
+int menuInicial(){
 	char usuario[50], senha[50], usuario_salvo[50], senha_salva[50];
 	int opcao = 0;
-	
 	FILE *p_dadosdousuario = fopen("dadosdousuario.txt", "r"); 
+	
 	fscanf(p_dadosdousuario, "%s %s", usuario_salvo, senha_salva);
 	fclose(p_dadosdousuario);
 	
@@ -67,7 +70,7 @@ void menuInicial(){
 			scanf("%s", senha);
 			
 			if(strcmp(usuario, usuario_salvo) == 0 && strcmp(senha, senha_salva) == 0){
-				return;
+				return menuprincipal;
 			}else{
 				printf("\nUsuario ou senha invalidos!\n\n");
 			}
@@ -76,20 +79,23 @@ void menuInicial(){
 	    	scanf("%s", usuario);
 	    	printf("Senha atual: ");
 	    	scanf("%s", senha);
+	    	
 	    	if(strcmp(usuario, usuario_salvo) == 0 && strcmp(senha, senha_salva) == 0){
 				printf("\nNovo usuario: ");
 				scanf("%s", usuario);
 				printf("Nova senha: ");
 				scanf("%s", senha);
+				
 				if(strlen(senha) > 5 && strcmp(senha, "123456") != 0){
 					p_dadosdousuario = fopen("dadosdousuario.txt", "w");
 					fprintf(p_dadosdousuario, "%s %s", usuario, senha);
 					fclose(p_dadosdousuario);
 					printf("\nConta alterada com sucesso! Voce sera redirecionado para o menu principal!\n\nRedirecionando...\n\n");
-					return;
+					return menuprincipal;
 				}else{
 					printf("\nA senha deve ter no minimo 6 digitos e ser dierente de 123456! Voce sera redirecionado para o menu inicial!\n\nRedirecionando...\n\n");
 				}
+				
 			}else{
 				printf("\nUsuario ou senha invalidos!\n\nRedirecionando para o menu inicial...\n\n");
 			}
@@ -97,10 +103,11 @@ void menuInicial(){
 			int resposta;
 			printf("\nVoce tem certeza?\n\n1 - Sim\n2 - Nao\n\nEscolha: ");
 			scanf("%d", &resposta);
+			
 			if(resposta == 1){
 				if(remove("dadosdousuario.txt") == 0){
 					printf("\nConta apagada com sucesso!\n\n");
-					menuCriacao();
+					return menucriacao;
 				}else{
 					perror("\nErro ao apagar a conta\n");
 				}
@@ -109,6 +116,7 @@ void menuInicial(){
 				printf("\nConta mantida!\n\n");
 				printf("Redirecionando para o menu inicial...\n\n");
 			}
+			
 		}else if(opcao == 4){
 			printf("\nSaindo...\n");
 			printf("\n********************************************************\n");
@@ -116,16 +124,15 @@ void menuInicial(){
 			printf("*                   SISTEMA ENCERRADO                  *\n");	
 			printf("*                                                      *\n");
 			printf("********************************************************\n");
-			exit(0);	
+			return sair;	
 		}else{
 			printf("\nOpcao invalida!\n\n");
 			printf("Redirecionando para o menu inicial...\n\n");
 		}
-	}while(opcao != 4);
-	return;	
+	}while(1);	
 }
 
-void menuPrincipal(){
+int menuPrincipal(){
 	int menu = 0, opcao = 0;
 	
 	while(menu != 5){
@@ -145,7 +152,6 @@ void menuPrincipal(){
 	    		printf("*                     MODULO PESSOAL                   *\n");	
 	    		printf("*                                                      *\n");
 	    		printf("********************************************************\n\n");
-	    		opcao = 0;
 	    		
 				while(opcao != 3){		
 	    			int idade;
@@ -182,6 +188,7 @@ void menuPrincipal(){
 						  printf("\nOpcao invalida!\n\n");	
 					}
 				}
+				opcao = 0;
     			break;	
 			case 2:
 				printf("\n********************************************************\n");
@@ -189,7 +196,6 @@ void menuPrincipal(){
 	    		printf("*                   MODULO FINANCEIRO                  *\n");	
 	    		printf("*                                                      *\n");
 	    		printf("********************************************************\n\n");
-	    		opcao = 0;
 	    		
 				while(opcao != 4){	
 					float sal_mes, sal_ano, diaria, receita_periodo, valor_conver, conver_dolar, conver_euro;
@@ -225,7 +231,8 @@ void menuPrincipal(){
 						default:
 							printf("\nOpcao invalida!\n\n");	
 					}
-				} 			
+				}
+				opcao = 0; 			
     			break;
 			case 3:
     			printf("\n********************************************************\n");
@@ -233,7 +240,6 @@ void menuPrincipal(){
     			printf("*                    MODULO ACADEMICO                  *\n");	
     			printf("*                                                      *\n");
     			printf("********************************************************\n\n");
-    			opcao = 0;
     			
 				while(opcao != 2){
 					float n1, n2, n3, n4, soma, media, d_media;
@@ -269,7 +275,8 @@ void menuPrincipal(){
 						default:
 							printf("\nOpcao invalida!\n\n");  	
 					}
-				}		
+				}
+				opcao = 0;		
     			break;    
 			case 4:
     			printf("\n********************************************************\n");
@@ -280,20 +287,37 @@ void menuPrincipal(){
     			break;
 			case 5:
 				printf("\nVoltando...\n\n");
-    			return;
-    			break;	
+    			return menuinicial;	
     		default:
     			printf("\nOpcao invalida!\n\n");
-    			printf("Redirecionando para o menu principal...\n");
 		}
 	}
 }
 
 int main() {
+	int retorno_menus = 0;
+	
 	while(1){
-		menuCriacao();
-		menuInicial();
-		menuPrincipal();
+		FILE *p_dadosdousuario = fopen("dadosdousuario.txt", "r");
+		
+		if(p_dadosdousuario == NULL){
+			retorno_menus = menuCriacao();
+		}else{
+			fclose(p_dadosdousuario);
+			retorno_menus = menuInicial();
+		}
+
+		if(retorno_menus == menuprincipal){
+			retorno_menus = menuPrincipal();
+		}
+		
+		if(retorno_menus == menucriacao){
+			continue;
+		}else if(retorno_menus == menuinicial){
+			continue;
+		}else if(retorno_menus == sair){
+			break;
+		}
 	}
 	
 	system("pause");
