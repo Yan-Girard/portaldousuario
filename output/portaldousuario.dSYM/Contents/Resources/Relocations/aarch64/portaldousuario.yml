@@ -1,0 +1,5 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     "/Users/usuario/Documents/Faculdade/Programação de Software/sistema de login/portaldousuario/output/portaldousuario"
+relocations:     []
+...
